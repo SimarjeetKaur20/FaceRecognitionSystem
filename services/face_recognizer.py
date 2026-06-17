@@ -2,7 +2,7 @@ import cv2
 import os
 
 
-class FaceCapture:
+class FaceRecognizer:
 
     def __init__(self):
 
@@ -11,21 +11,42 @@ class FaceCapture:
             "haarcascade_frontalface_default.xml"
         )
 
-    def capture_faces(self, person_name):
-
-        dataset_path = os.path.join(
-            "dataset",
-            person_name
+        self.recognizer = (
+            cv2.face.LBPHFaceRecognizer_create()
         )
 
-        os.makedirs(
-            dataset_path,
-            exist_ok=True
+        self.recognizer.read(
+            "trainer/trainer.yml"
         )
+
+        self.label_map = {}
+
+        self.load_labels()
+
+    def load_labels(self):
+
+        current_label = 0
+
+        for person_name in os.listdir(
+            "dataset"
+        ):
+
+            person_folder = os.path.join(
+                "dataset",
+                person_name
+            )
+
+            if os.path.isdir(person_folder):
+
+                self.label_map[current_label] = (
+                    person_name
+                )
+
+                current_label += 1
+
+    def recognize_faces(self):
 
         camera = cv2.VideoCapture(0)
-
-        count = 0
 
         while True:
 
@@ -52,17 +73,19 @@ class FaceCapture:
                     x:x+w
                 ]
 
-                count += 1
-
-                image_path = os.path.join(
-                    dataset_path,
-                    f"{count}.jpg"
+                label, confidence = (
+                    self.recognizer.predict(face)
                 )
 
-                cv2.imwrite(
-                    image_path,
-                    face
-                )
+                if confidence < 80:
+
+                    name = self.label_map.get(
+                        label,
+                        "Unknown"
+                    )
+
+                else:
+                    name = "Unknown"
 
                 cv2.rectangle(
                     frame,
@@ -74,28 +97,23 @@ class FaceCapture:
 
                 cv2.putText(
                     frame,
-                    f"Images Captured: {count}/50",
-                    (10, 30),
+                    name,
+                    (x, y-10),
                     cv2.FONT_HERSHEY_SIMPLEX,
-                    0.8,
+                    0.9,
                     (0, 255, 0),
                     2
                 )
 
             cv2.imshow(
-                "Register User",
+                "Face Recognition",
                 frame
             )
 
-            if cv2.waitKey(1) == 27:
-                break
+            key = cv2.waitKey(1)
 
-            if count >= 100:
+            if key == 27:
                 break
 
         camera.release()
         cv2.destroyAllWindows()
-
-        print(
-            f"{count} images saved for {person_name}"
-        )
