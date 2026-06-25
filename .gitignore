@@ -1,9 +1,15 @@
+# Python
 __pycache__/
 *.pyc
 
-trainer/
-attendance/
-
-*.db
-
+# VS Code
 .vscode/
+
+# Personal dataset (do not upload)
+dataset/
+
+# Trained model (can be regenerated)
+trainer/trainer.yml
+
+# SQLite database (contains personal data)
+database/face_recognition.db

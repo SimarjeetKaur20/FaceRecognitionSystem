@@ -18,10 +18,46 @@ if __name__ == "__main__":
     main()
 """
 # for recognizing faces
-
+"""
 from services.face_recognizer import FaceRecognizer
 def main():
     recognizer = FaceRecognizer()
     recognizer.recognize_faces()
 if __name__ == "__main__":
+    main()
+"""
+# for database
+
+from database.database import Database
+
+from datetime import datetime
+
+
+def main():
+
+    db = Database()
+
+    name = input("Enter Name : ")
+
+    today = datetime.now().strftime("%d-%m-%Y")
+
+    db.add_user(name, today)
+
+    print()
+
+    print("Registered Users")
+
+    print("----------------")
+
+    users = db.get_all_users()
+
+    for user in users:
+
+        print(user)
+
+    db.close()
+
+
+if __name__ == "__main__":
+
     main()
