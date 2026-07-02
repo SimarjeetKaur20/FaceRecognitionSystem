@@ -1,0 +1,3 @@
+# trainer.yml and label_map.json are generated here after training.
+# They are excluded from version control (.gitignore).
+# To generate: run the app and use option 2 (Train Model).

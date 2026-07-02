@@ -1,0 +1,2 @@
+# CSV attendance reports are exported here at runtime.
+# Individual report files are excluded from version control (.gitignore).
